@@ -11,17 +11,17 @@
     <h1>Testing Socket</h1>
 
     <div id="board">
-      <button id="box0">=</button>
-      <button id="box1">=</button>
-      <button id="box2">=</button>
+      <button id="box0"></button>
+      <button id="box1"></button>
+      <button id="box2"></button>
       <br />
-      <button id="box3">=</button>
-      <button id="box4">=</button>
-      <button id="box5">=</button>
+      <button id="box3"></button>
+      <button id="box4"></button>
+      <button id="box5"></button>
       <br />
-      <button id="box6">=</button>
-      <button id="box7">=</button>
-      <button id="box8">=</button>
+      <button id="box6"></button>
+      <button id="box7"></button>
+      <button id="box8"></button>
     </div>
 
     <script src="../socket.io/socket.io.js"></script>
@@ -34,14 +34,26 @@
       }
       for (var i = 0; i < boxes.length; i ++){
         boxes[i].addEventListener('click', function(e){
-          
-          socket.emit('box', parseInt(e.id[e.id.length - 1]));
+          socket.emit('box', parseInt(this.id.substr(this.id.length - 1, 1)));
         })
       }
 
       socket.on('madeMove', function(move){
-        console.log(move['spot']);
-        boxes[move['spot']].value = move['xoro'];
+        boxes[move['spot']].innerText = move['xoro'];
+        if( move['xoro'] == 'x'){
+          boxes[move['spot']].classList.remove('o');
+          boxes[move['spot']].classList.add('x');
+        }
+        else{
+          boxes[move['spot']].classList.add('o');
+          boxes[move['spot']].classList.remove('x');
+        }
+      });
+
+      socket.on('reset', function(){
+        for (var i = 0; i < boxes.length; i ++){
+          boxes[i].innerText = "";
+        }        
       });
     </script>
   </body>
